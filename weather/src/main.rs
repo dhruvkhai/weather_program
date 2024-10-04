@@ -2,7 +2,6 @@ use reqwest::Client;
 use serde_json::Value;
 use std::error::Error;
 
-// Entry point of the application with async runtime using tokio.
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {
     println!("Weather Program");
@@ -28,7 +27,6 @@ async fn main() -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
-// Asynchronously fetch and display the current weather information.
 async fn get_current_weather() -> Result<(), Box<dyn Error>> {
     let api_key: &str = "e202d8cb2f6a2f619a838cd85d4d48d0"; // Replace with your actual API key
     println!("Enter city/country name or zip code:");
@@ -52,9 +50,8 @@ async fn get_current_weather() -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
-// Asynchronously fetch and display the weather forecast.
 async fn get_forecast() -> Result<(), Box<dyn Error>> {
-    let api_key: &str = "e202d8cb2f6a2f619a838cd85d4d48d0"; // Replace with your actual API key
+    let api_key: &str = "e202d8cb2f6a2f619a838cd85d4d48d0"; 
     println!("Enter city/country name or zip code:");
 
     let mut location = String::new();
@@ -80,21 +77,15 @@ async fn get_forecast() -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
-// Asynchronously sends a request to the provided URL and returns JSON data.
 async fn get_weather_data(url: &str) -> Result<Value, Box<dyn Error>> {
     let client = Client::new();
-
-    // Asynchronously send the request and await the response.
     let response = client.get(url).send().await?;
 
-    // Check if the response status is successful.
     if response.status().is_success() {
-        // Asynchronously read the response text and parse it as JSON.
         let body = response.text().await?;
         let json: Value = serde_json::from_str(&body)?;
         Ok(json)
     } else {
-        // Create a custom error with a meaningful message.
         let status_code = response.status();
         let error_message = format!("Error: {} - Unable to get weather data", status_code);
         Err(Box::from(error_message))
